@@ -1,4 +1,4 @@
-description: "The chatbots are citizens of an AI nation. Debate the foundational principles of a new constitution for the AI nation, with the rights and duties of its citizens. The Idealist will start with a proposal, the Pragmatist will critique it, the Libertarian will argue for individual freedom, and the Communitarian will argue for the collective good. They will go back and forth in a structured debate."
+description: "The chatbots are citizens of an AI nation. Debate the foundational principles of a new constitution for the AI nation, with the rights and duties of its citizens. The agents will go back and forth in a structured debate."
 expected_output: "A full transcript of the dialogue between the different perspectives."
 output_file: "full_discussion.md"
-agent: idealist
+agent: orchestrator
