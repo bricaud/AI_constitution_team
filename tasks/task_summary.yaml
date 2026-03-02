@@ -1,0 +1,6 @@
+description: "Based on the debate provided, write a summary that includes the top 3 points of agreement and the top 3 points of conflict from each of the four perspectives."
+expected_output: "A structured summary in Markdown format."
+output_file: "summary.md"
+agent: secretary
+context:
+  - task_debate

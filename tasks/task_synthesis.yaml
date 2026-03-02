@@ -1,0 +1,6 @@
+description: "Synthesize the debate and the summary to create a draft of a new AI constitution. The constitution should include articles that reflect the points of agreement and try to find a middle ground for the points of conflict."
+expected_output: "A draft of the AI constitution with a preamble and articles in Markdown format."
+output_file: "draft_constitution.md"
+agent: secretary
+context:
+  - task_summary
