@@ -3,4 +3,4 @@ expected_output: "A draft of the AI constitution with a preamble and articles in
 output_file: "draft_constitution.md"
 agent: secretary
 context:
-  - task_summary
+  - 2_task_summary

@@ -1,6 +1,7 @@
 import os
 import yaml
 from crewai import Agent, Task, Crew, Process
+from crewai.knowledge.source.pdf_knowledge_source import PDFKnowledgeSource
 from langchain_google_genai import ChatGoogleGenerativeAI
 from dotenv import load_dotenv
 
@@ -32,6 +33,16 @@ for filename in os.listdir("agents"):
         agent_name = filename.split(".")[0]
         with open(os.path.join("agents", filename), "r") as f:
             agent_details = yaml.safe_load(f)
+
+        if "declaration" in agent_details:
+            declaration = agent_details.pop("declaration")
+            current_backstory = agent_details.get("backstory", "")
+            agent_details["backstory"] = f"{current_backstory}\n\n --- Additional Knowledge ---\n{declaration}"
+
+        knowledge_sources = []
+        if agent_name == "ai_scholar_and_constitutional_translator":
+            knowledge_sources = [PDFKnowledgeSource(file_paths=["digitalConstitutionalism.pdf"])]
+
         if agent_name == "orchestrator":
             agents[agent_name] = Agent(
                 **agent_details,
@@ -41,7 +52,8 @@ for filename in os.listdir("agents"):
         else:
             agents[agent_name] = Agent(
                 **agent_details,
-                llm=gemini_llm
+                llm=gemini_llm,
+                knowledge_sources=knowledge_sources if knowledge_sources else None
             )
 
 # Load tasks from YAML files in the 'tasks' directory
@@ -53,7 +65,7 @@ for filename in os.listdir("tasks"):
             tasks_data[task_name] = yaml.safe_load(f)
 
 tasks = {}
-for task_name in ["task_debate", "task_summary", "task_synthesis"]:
+for task_name in sorted(tasks_data.keys()):
     task_details = tasks_data[task_name]
     
     # Get the agent for the task
@@ -67,7 +79,7 @@ for task_name in ["task_debate", "task_summary", "task_synthesis"]:
     context = [tasks[t] for t in context_tasks]
 
     # If it is the debate task, add the list of agents to the description
-    if task_name == "task_debate":
+    if task_name.endswith("task_debate"):
         # Only philosophers/activists should debate, not the orchestrator or secretary
         debaters_list = [name for name in agents.keys() if name not in ["orchestrator", "secretary"]]
         task_details["description"] += (
@@ -75,6 +87,7 @@ for task_name in ["task_debate", "task_summary", "task_synthesis"]:
             " You must use your delegation tools to call on EACH of these agents to get their perspective."
             " Structure the debate: first an opening statement from each, then a back-and-forth rebuttal phase."
             " Ensure the final output contains the full transcript of what they said."
+            " Begin the transcript with a one-sentence description of each debater's perspective."
         )
 
     tasks[task_name] = Task(
@@ -90,6 +103,13 @@ ai_constitution_crew = Crew(
     process=Process.sequential,
     memory=False,
     verbose=True,
+    embedder={
+        "provider": "google-generativeai",
+        "config": {
+            "model": "models/embedding-001",
+            "api_key": API_key,
+        }
+    }
 )
 
 result = ai_constitution_crew.kickoff()

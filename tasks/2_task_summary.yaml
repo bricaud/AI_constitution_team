@@ -1,0 +1,6 @@
+description: "Based on the debate provided, write a summary that includes the main points of agreement and the main points of conflict from each of the perspectives."
+expected_output: "A structured summary in Markdown format."
+output_file: "summary.md"
+agent: secretary
+context:
+  - 1_task_debate
