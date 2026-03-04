@@ -4,6 +4,7 @@ from crewai import Agent, Task, Crew, Process
 from crewai.knowledge.source.pdf_knowledge_source import PDFKnowledgeSource
 from langchain_google_genai import ChatGoogleGenerativeAI
 from dotenv import load_dotenv
+import datetime
 
 load_dotenv()
 
@@ -40,8 +41,23 @@ for filename in os.listdir("agents"):
             agent_details["backstory"] = f"{current_backstory}\n\n --- Additional Knowledge ---\n{declaration}"
 
         knowledge_sources = []
+        if agent_name == "ai_activist":
+            # Reference document: European Declaration of Digital Rights and Principles
+            # https://digital-strategy.ec.europa.eu/en/library/european-declaration-digital-rights-and-principles
+            knowledge_sources = [PDFKnowledgeSource(file_paths=["European_Declaration_on_Digital_Rights_and_Principles.pdf"])]
+        if agent_name == "ai_digital_advocate":
+            # Reference document: the Global Digital Compact (Rev. 1)
+            # https://www.un.org/digital-emerging-technologies/sites/www.un.org.techenvoy/files/general/GDC_Rev_3_silence_procedure.pdf
+            knowledge_sources = [PDFKnowledgeSource(file_paths=["GDC_Rev_3_silence_procedure.pdf"])]
         if agent_name == "ai_scholar_and_constitutional_translator":
+            # Reference document: Digital Constitutionalism: The Role of Internet Bills of Rights
+            # https://library.oapen.org/bitstream/handle/20.500.12657/75991/9781000685190.pdf?sequence=1&isAllowed=y
             knowledge_sources = [PDFKnowledgeSource(file_paths=["digitalConstitutionalism.pdf"])]
+        if agent_name == "ai_digital_rights_constitutionalist":
+            # Reference document: Rights in the Digital Age: A Human Rights Approach to the Governance of AI
+            # https://www.idea.int/publications/catalogue/rights-digital-age
+            knowledge_sources = [PDFKnowledgeSource(file_paths=["rights-in-the-digital-age.pdf"])]
+
 
         if agent_name == "orchestrator":
             agents[agent_name] = Agent(
@@ -57,6 +73,9 @@ for filename in os.listdir("agents"):
             )
 
 # Load tasks from YAML files in the 'tasks' directory
+os.makedirs("constitutions", exist_ok=True)
+timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+
 tasks_data = {}
 for filename in os.listdir("tasks"):
     if filename.endswith(".yaml"):
@@ -79,16 +98,22 @@ for task_name in sorted(tasks_data.keys()):
     context = [tasks[t] for t in context_tasks]
 
     # If it is the debate task, add the list of agents to the description
-    if task_name.endswith("task_debate"):
+    if "task_debate" in task_name:
         # Only philosophers/activists should debate, not the orchestrator or secretary
         debaters_list = [name for name in agents.keys() if name not in ["orchestrator", "secretary"]]
         task_details["description"] += (
-            f" You are presiding over a debate between: {', '.join(debaters_list)}."
+            f" You are presiding over this phase of the debate between: {', '.join(debaters_list)}."
             " You must use your delegation tools to call on EACH of these agents to get their perspective."
-            " Structure the debate: first an opening statement from each, then a back-and-forth rebuttal phase."
+            " When delegating, explicitly instruct them to actively search and cite their provided knowledge base (if they have one) to back up their arguments."
             " Ensure the final output contains the full transcript of what they said."
-            " Begin the transcript with a one-sentence description of each debater's perspective."
+            " Begin each speaker's turn with their name and a one-sentence summary of their perspective."
         )
+
+    # Modify output_file if it exists to include timestamp and directory
+    if "output_file" in task_details:
+        original_output = task_details["output_file"]
+        base_name, ext = os.path.splitext(original_output)
+        task_details["output_file"] = os.path.join("constitutions", f"{base_name}_{timestamp}{ext}")
 
     tasks[task_name] = Task(
         **task_details,
@@ -103,13 +128,14 @@ ai_constitution_crew = Crew(
     process=Process.sequential,
     memory=False,
     verbose=True,
-    embedder={
-        "provider": "google-generativeai",
-        "config": {
-            "model": "models/embedding-001",
-            "api_key": API_key,
-        }
+    embedder = {
+    "provider": "google-generativeai", # Or "google-generativeai"
+    "config": {
+        "model": "models/embedding-001", # Ensure you use the 'models/' prefix
+        "api_key": API_key,
+        "task_type": "retrieval_document" # Optional but recommended for RAG
     }
+}
 )
 
 result = ai_constitution_crew.kickoff()
@@ -118,3 +144,8 @@ print("\n\n########################")
 print("## FINAL SYNTHESIS OUTPUT ##")
 print("########################\n")
 print(result.raw)
+
+filename = os.path.join("constitutions", f"draft_constitution_{timestamp}.md")
+with open(filename, "w", encoding="utf-8") as f:
+    f.write(result.raw)
+print(f"\nSaved draft constitution to {filename}")

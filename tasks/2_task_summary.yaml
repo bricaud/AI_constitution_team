@@ -3,4 +3,6 @@ expected_output: "A structured summary in Markdown format."
 output_file: "summary.md"
 agent: secretary
 context:
-  - 1_task_debate
+  - 1a_task_debate_opening
+  - 1b_task_debate_rebuttal1
+  - 1c_task_debate_rebuttal2

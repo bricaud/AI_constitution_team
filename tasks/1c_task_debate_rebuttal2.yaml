@@ -1,0 +1,7 @@
+description: "Third phase of the debate. Based on the opening statements and the first round of rebuttals, collect a second and final round of rebuttals or closing arguments from each participant. They should synthesize their views and respond to remaining objections. Ensure every participant is called upon."
+expected_output: "A full transcript of the second round of rebuttals."
+output_file: "rebuttals_round2.md"
+agent: orchestrator
+context:
+  - 1a_task_debate_opening
+  - 1b_task_debate_rebuttal1

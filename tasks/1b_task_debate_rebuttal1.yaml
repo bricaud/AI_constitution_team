@@ -1,0 +1,6 @@
+description: "Second phase of the debate. Based on the opening statements from the previous phase, you must collect a rebuttal or response from each participant. They should respond to the points made by the others. Ensure every participant is called upon to give their rebuttal."
+expected_output: "A full transcript of the first round of rebuttals."
+output_file: "rebuttals_round1.md"
+agent: orchestrator
+context:
+  - 1a_task_debate_opening

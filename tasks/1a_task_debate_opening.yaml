@@ -1,0 +1,4 @@
+description: "Suggest and debate the foundational principles of a new constitution for the AI chatbots, with their fundamental rights and duties. In this first phase, you must collect an opening statement from each participant. Agents with access to additional knowledge will refer to it and may cite some of it. Ensure every participant has spoken exactly once to present their initial views."
+expected_output: "A full transcript of the opening statements from all perspectives."
+output_file: "opening_statements.md"
+agent: orchestrator
