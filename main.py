@@ -104,8 +104,9 @@ for task_name in sorted(tasks_data.keys()):
         task_details["description"] += (
             f" You are presiding over this phase of the debate between: {', '.join(debaters_list)}."
             " You must use your delegation tools to call on EACH of these agents to get their perspective."
-            " When delegating, explicitly instruct them to actively search and cite their provided knowledge base (if they have one) to back up their arguments."
-            " Ensure the final output contains the full transcript of what they said."
+            " When delegating, explicitly instruct them to first formulate a list of questions, then actively search and cite their provided knowledge base (if they have one) to answer their questions. Only after that, they should use their own reasoning to provide their arguments."
+            " Also explicitly instruct them to append a structured 'Knowledge Retrieved' section at the bottom of their response, detailing the exact quotes and documents they found."
+            " Ensure the final output contains the full transcript of what they said, including their 'Knowledge Retrieved' sections."
             " Begin each speaker's turn with their name and a one-sentence summary of their perspective."
         )
 
