@@ -59,7 +59,7 @@ for filename in os.listdir("agents"):
             knowledge_sources = [PDFKnowledgeSource(file_paths=["rights-in-the-digital-age.pdf"])]
 
 
-        if agent_name == "orchestrator":
+        if agent_name in ["orchestrator", "secretary"]:
             agents[agent_name] = Agent(
                 **agent_details,
                 llm=pro_llm,

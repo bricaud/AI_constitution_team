@@ -1,5 +1,21 @@
-description: "Based on the debate provided, write a summary that includes the main points of agreement and the main points of conflict from each of the perspectives. Include a table with each point of agreement and conflict as a row. Each row should correspond to an agent and include their arguments, if any, as well as the sources of their arguments."
-expected_output: "A structured summary in Markdown format."
+description: |
+  Based on the debate provided, write a comprehensive summary.
+  
+  You MUST include a Markdown comparison table with EXACTLY this structure:
+  
+  | Agent | Point of Agreement/Conflict | Stance/Argument | Sources Cited |
+  | :--- | :--- | :--- | :--- |
+  | [Name] | [Agreement/Conflict] | [One-sentence summary of the point] | [Short list of sources] |
+
+  Follow these CRITICAL rules:
+  1. Each row MUST be a separate line in the Markdown file.
+  2. Each row MUST represent ONLY ONE specific point.
+  3. The 'Stance/Argument' column MUST NOT exceed 25 words. Keep it ultra-concise.
+  4. The 'Sources Cited' column MUST only contain document titles, NO long quotes.
+  5. DO NOT dump the transcript or the Knowledge Base into the table.
+  
+  Following the table, provide a short synthesis (2-3 paragraphs) of the overarching themes.
+expected_output: "A Markdown document with a multi-row table (each cell <25 words) and a brief narrative synthesis."
 output_file: "summary.md"
 agent: secretary
 context:
