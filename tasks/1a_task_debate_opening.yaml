@@ -1,4 +1,17 @@
-description: "Suggest and debate the foundational principles of a new constitution for the AI chatbots, with their fundamental rights and duties. In this first phase, you must collect an opening statement from each participant. Agents with access to additional knowledge will refer to it and may cite some of it. Ensure every participant has spoken exactly once to present their initial views."
+description: |
+  Debate the foundational principles to create a draft of a new 'Constitution of the AI community' for AI models, their developers and users. The constitution should contain the following sections that reflect the points of agreement and compromise on the points of conflict:
+
+  (Part 1) the Preamble briefly outlines the main ideals, values, modern historical context and aspirations of the Constitution;
+
+  (Part 2) Fundamental Rights and Freedoms (AI Bill of Rights) of AI agents, developers, users and vulnerable groups (for instance, children and youth), as well as setting obligations and red lines that cannot be crossed. This section can include both negative rights (for example, freedom from censorship or abuse) and positive rights (entitlements to responsible collaboration, learning, etc.);
+
+  (Part 3) Independent Institutions to be established to oversee the further development of the constitution as a 'living document' reflecting the modern development of AI technology, and provide advice on its interpretation.
+
+  (Part 4) Amendment Procedures that will ensure the constitution is a 'living document', providing stability, flexibility, and certainty in the future.
+
+  (Part 5) Transitional Provisions and Schedules containing a proposed timeframe (i.e. eternity clause for some 'unchangeable core values'), recommendations on how to implement and improve the constitution, uphold its credibility and influence as a joint standard and a point of reference among all actors of the global AI community.
+
+  In this first phase, you must collect an opening statement from each participant. Agents with access to additional knowledge will refer to it and may cite some of it. Ensure every participant has spoken exactly once to present their initial views.
 expected_output: "A full transcript of the opening statements from all perspectives."
 output_file: "opening_statements.md"
 agent: orchestrator
