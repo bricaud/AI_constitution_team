@@ -1,4 +1,4 @@
-description: "Based on the debate provided, write a summary that includes the main points of agreement and the main points of conflict from each of the perspectives."
+description: "Based on the debate provided, write a summary that includes the main points of agreement and the main points of conflict from each of the perspectives. Include a table with each point of agreement and conflict as a row. Each row should correspond to an agent and include their arguments, if any, as well as the sources of their arguments."
 expected_output: "A structured summary in Markdown format."
 output_file: "summary.md"
 agent: secretary

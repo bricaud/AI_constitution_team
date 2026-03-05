@@ -140,13 +140,3 @@ ai_constitution_crew = Crew(
 )
 
 result = ai_constitution_crew.kickoff()
-
-print("\n\n########################")
-print("## FINAL SYNTHESIS OUTPUT ##")
-print("########################\n")
-print(result.raw)
-
-filename = os.path.join("constitutions", f"draft_constitution_{timestamp}.md")
-with open(filename, "w", encoding="utf-8") as f:
-    f.write(result.raw)
-print(f"\nSaved draft constitution to {filename}")
