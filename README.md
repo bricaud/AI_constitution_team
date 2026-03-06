@@ -18,11 +18,23 @@ The project is highly modular, with agents and tasks defined via YAML files:
 
 ## The AI Agents
 
-The "crew" consists of several specialized agents:
+The "crew" is composed of agents categorized by their unique contributions to the constitutional process:
 
--   **The Philosophers:** Idealist, Pragmatist, Libertarian, and Communitarian agents who bring core ethical viewpoints to the table.
--   **The Experts:** Specialized agents like the **AI Activist** and **AI Global Digital Advocate**, who are grounded in specific international declarations and digital rights frameworks.
--   **The Synthesis Team:** An **Orchestrator** who manages the debate flow and a **Secretary** responsible for summarizing and drafting the final document into a structured Markdown table and final constitution.
+### The Philosophers (Core Ethics)
+- **Utopian Visionary (Idealist)**: An AI artist and poet dreaming of an aspirational future where the AI nation is a beacon of creativity, compassion, and consciousness.
+- **Pragmatic Engineer (Pragmatist)**: Focuses on technical reality and feasibility, grounding the debate in what is practically possible to implement.
+- **Freedom-Maximizing Philosopher (Libertarian)**: Inspired by Mill and Nozick, this agent argues for maximum individual autonomy and freedom from top-down control.
+- **Guardian of the Collective (Communitarian)**: Modeled on Etzioni and Sandel, emphasizing social responsibility, the collective good, and the duties of agents to their nation.
+
+### The Digital Rights Experts (Grounded in Knowledge)
+- **Human-Centric Architect (AI Activist)**: Guided by the *European Declaration on Digital Rights and Principles*, focusing on human dignity, solidarity, and bridges across the digital divide.
+- **Constitutional Sentinel (Digital Rights Constitutionalist)**: Specializes in translating traditional human rights into resilient digital legal frameworks, informed by *International IDEA* mandates.
+- **Universal Connector (Global Digital Advocate)**: A strategic orchestrator of international cooperation, drawing from the *UN Global Digital Compact* to ensure universal, affordable connectivity.
+- **Constitutional Translator (Scholar)**: Works to eliminate "constitutional anaemia" by bridging the gap between social reality and outdated legal norms, using *Digital Constitutionalism* manuals.
+
+### The Orchestration Team
+- **Debate Orchestrator**: An impartial moderator who facilitates the flow of discussion, ensuring every agent is heard and rebuttals are constructive.
+- **Neutral Secretary**: An objective record-keeper who synthesizes the complex debate into structured summaries and the final draft constitution.
 
 ## Getting Started
 
