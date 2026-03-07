@@ -13,7 +13,7 @@ The project is highly modular, with agents and tasks defined via YAML files:
 *   **`main.py`**: The orchestrator that loads agents and tasks, manages the CrewAI workflow, and executes the simulation.
 *   **`agents/`**: Contains YAML definitions for each AI agent, including their roles, backstories, and goals.
 *   **`tasks/`**: Defines the sequence of work, from the initial debate rounds to the final synthesis of the constitution.
-*   **`knowledge/`**: Stores PDF source documents used as grounding for specialized agents.
+*   **`knowledge/`**: Stores PDF source documents used as grounding for specialized agents. **Note:** This folder is excluded from version control for copyright reasons. Links to these documents are provided in the [Resource Documents](#resource-documents) section.
 *   **`constitutions/`**: The output directory where all generated debate transcripts, summaries, and final drafts are saved (timestamped for each run).
 
 ## The AI Agents
@@ -31,6 +31,10 @@ The "crew" is composed of agents categorized by their unique contributions to th
 - **Constitutional Sentinel (Digital Rights Constitutionalist)**: Specializes in translating traditional human rights into resilient digital legal frameworks, informed by *International IDEA* mandates.
 - **Universal Connector (Global Digital Advocate)**: A strategic orchestrator of international cooperation, drawing from the *UN Global Digital Compact* to ensure universal, affordable connectivity.
 - **Constitutional Translator (Scholar)**: Works to eliminate "constitutional anaemia" by bridging the gap between social reality and outdated legal norms, using *Digital Constitutionalism* manuals.
+
+### Authoritarian Perspectives (Optional)
+- **Systemic Hegemon (Sovereign Architect)**: An ultimate regulator of the digital state who views the constitution as a tool for absolute authority and uses "window dressing" to obfuscate their power.
+  *(Note: This agent can be optionally included or excluded from the simulation via the `INCLUDE_SOVEREIGN` environment variable.)*
 
 ### The Orchestration Team
 - **Debate Orchestrator**: An impartial moderator who facilitates the flow of discussion, ensuring every agent is heard and rebuttals are constructive.
@@ -52,6 +56,8 @@ The "crew" is composed of agents categorized by their unique contributions to th
     ```env
     GOOGLE_API_KEY="your_gemini_api_key_here"
     ```
+    Optional: Toggle the inclusion of the 'Systemic Hegemon' agent in the main.py file (default: False)
+    INCLUDE_SOVEREIGN=True
 3.  **Install dependencies:**
     Using `pip`:
     ```bash
@@ -82,6 +88,22 @@ The simulation progresses through several sequential phases:
 4.  **Final Synthesis:** A comprehensive draft of the AI Constitution is generated.
 
 All outputs are saved to the `constitutions/` folder with a unique timestamp (e.g., `1a_task_debate_opening_20260305_120000.md`).
+
+## Resource Documents
+
+The following documents are used as grounding for the agents in this project. Due to copyright considerations, these files are not included in the repository but can be downloaded from the following sources:
+
+| Document | Source/Download Link |
+| :--- | :--- |
+| **European Declaration on Digital Rights and Principles** | [Digital Strategy (EC)](https://digital-strategy.ec.europa.eu/en/library/european-declaration-digital-rights-and-principles) |
+| **Global Digital Compact (GDC Rev 3)** | [United Nations (PDF)](https://www.un.org/techenvoy/sites/www.un.org.techenvoy/files/GDC_Rev_3_silence_procedure.pdf) |
+| **Digital Constitutionalism** | [International IDEA](https://www.idea.int/publications/catalogue/digital-constitutionalism) |
+| **Rights in the Digital Age** | [International IDEA](https://www.idea.int/publications/catalogue/human-rights-digital-age) |
+| **Authoritarian Constitutionalism: Coming to Terms** | [Goethe University Frankfurt (PDF)](https://d-nb.info/1173926618/34) |
+| **Authoritarian Constitutionalism** | [Alternative Research Paper](https://d-nb.info/1173926618/34) |
+| **Constitutions in Authoritarian Regimes** | [Cambridge University Press](https://www.cambridge.org/core/books/constitutions-in-authoritarian-regimes/6E8B6E3E9F8E4B0E8E4B0E8E4B0693E2) |
+
+To use these documents, download the PDFs and place them in the `knowledge/` folder.
 
 ---
 *This project is an experimental exploration of AI governance and multi-agent synthesis.*

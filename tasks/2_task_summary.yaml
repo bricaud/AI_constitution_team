@@ -3,15 +3,15 @@ description: |
   
   You MUST include a Markdown comparison table with EXACTLY this structure:
   
-  | Agent | Point of Agreement/Conflict | Stance/Argument | Sources Cited |
+  | Statement | Proposed By | Agreed By | Disagreed By |
   | :--- | :--- | :--- | :--- |
-  | [Name] | [Agreement/Conflict] | [One-sentence summary of the point] | [Short list of sources] |
+  | [Point of agreement or disagreement] | [Agent Name] | [Agent Names] | [Agent Names] |
 
   Follow these CRITICAL rules:
   1. Each row MUST be a separate line in the Markdown file.
   2. Each row MUST represent ONLY ONE specific point.
-  3. The 'Stance/Argument' column MUST NOT exceed 25 words. Keep it ultra-concise.
-  4. The 'Sources Cited' column MUST only contain document titles, NO long quotes.
+  3. The 'Statement' column MUST NOT exceed 25 words. Keep it ultra-concise.
+  4. In the 'Agreed By' and 'Disagreed By' columns, list the names of the agents who supported or opposed the statement. If nobody disagreed, write 'None'.
   5. DO NOT dump the transcript or the Knowledge Base into the table.
   
   Following the table, provide a short synthesis (2-3 paragraphs) of the overarching themes.

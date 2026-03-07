@@ -6,13 +6,16 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from dotenv import load_dotenv
 import datetime
 
+# Variables
+INCLUDE_SOVEREIGN = True # To include the sovereign architect, set to True
+
 load_dotenv()
 
 # 1. Setup your single Gemini API Key
 API_key = os.getenv("GOOGLE_API_KEY")
 
 # 2. Configure the Gemini Model (shared by all bots)
-gemini_llm = ChatGoogleGenerativeAI(
+lite_llm = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash-lite",
     verbose=True,
     temperature=0.7,
@@ -20,6 +23,14 @@ gemini_llm = ChatGoogleGenerativeAI(
 )
 
 # A more powerful model for the Orchestrator/Manager
+flash_llm = ChatGoogleGenerativeAI(
+    model="gemini-2.5-flash",
+    verbose=True,
+    temperature=0.7,
+    google_api_key=API_key
+)
+
+# A more powerful model for the secretary
 pro_llm = ChatGoogleGenerativeAI(
     model="gemini-2.5-pro",
     verbose=True,
@@ -35,6 +46,10 @@ for filename in os.listdir("agents"):
         with open(os.path.join("agents", filename), "r") as f:
             agent_details = yaml.safe_load(f)
 
+        # Make Sovereign Architect optional via environment variable
+        if agent_name == "sovereign_architect" and not INCLUDE_SOVEREIGN:
+            continue # Skip this agent
+
         if "declaration" in agent_details:
             declaration = agent_details.pop("declaration")
             current_backstory = agent_details.get("backstory", "")
@@ -49,6 +64,14 @@ for filename in os.listdir("agents"):
             # Reference document: the Global Digital Compact (Rev. 1)
             # https://www.un.org/digital-emerging-technologies/sites/www.un.org.techenvoy/files/general/GDC_Rev_3_silence_procedure.pdf
             knowledge_sources = [PDFKnowledgeSource(file_paths=["GDC_Rev_3_silence_procedure.pdf"])]
+        if agent_name == "sovereign_architect":
+            # Reference documents: Authoritarian Constitutionalism: Coming to Terms
+            # https://d-nb.info/1173926618/34
+            knowledge_sources = [
+                PDFKnowledgeSource(file_paths=["Authoritarian_Constitutionalism_coming_to_terms.pdf"]),
+                PDFKnowledgeSource(file_paths=["authoritarian-constitutionalism.pdf"]),
+                PDFKnowledgeSource(file_paths=["Introduction_Chapter_1_of_Constitutions_in_Authoritarian_Regi.pdf"])
+            ]
         if agent_name == "ai_scholar_and_constitutional_translator":
             # Reference document: Digital Constitutionalism: The Role of Internet Bills of Rights
             # https://library.oapen.org/bitstream/handle/20.500.12657/75991/9781000685190.pdf?sequence=1&isAllowed=y
@@ -59,21 +82,28 @@ for filename in os.listdir("agents"):
             knowledge_sources = [PDFKnowledgeSource(file_paths=["rights-in-the-digital-age.pdf"])]
 
 
-        if agent_name in ["orchestrator", "secretary"]:
+        if agent_name == "secretary":
             agents[agent_name] = Agent(
                 **agent_details,
                 llm=pro_llm,
                 max_iter=50
             )
+        elif agent_name == "orchestrator":
+            agents[agent_name] = Agent(
+                **agent_details,
+                llm=flash_llm,
+                max_iter=50
+            )
         else:
             agents[agent_name] = Agent(
                 **agent_details,
-                llm=gemini_llm,
+                llm=lite_llm,
                 knowledge_sources=knowledge_sources if knowledge_sources else None
             )
 
 # Load tasks from YAML files in the 'tasks' directory
-os.makedirs("constitutions", exist_ok=True)
+output_dir = "constitutions_challenged" if "sovereign_architect" in agents else "constitutions"
+os.makedirs(output_dir, exist_ok=True)
 timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 
 tasks_data = {}
@@ -114,7 +144,7 @@ for task_name in sorted(tasks_data.keys()):
     if "output_file" in task_details:
         original_output = task_details["output_file"]
         base_name, ext = os.path.splitext(original_output)
-        task_details["output_file"] = os.path.join("constitutions", f"{base_name}_{timestamp}{ext}")
+        task_details["output_file"] = os.path.join(output_dir, f"{base_name}_{timestamp}{ext}")
 
     tasks[task_name] = Task(
         **task_details,

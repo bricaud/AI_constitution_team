@@ -5,3 +5,6 @@
 .venv/
 
 # Logs and outputs
+
+# Knowledge base (excluded for copyright reasons)
+knowledge/
