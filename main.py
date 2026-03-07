@@ -56,30 +56,12 @@ for filename in os.listdir("agents"):
             agent_details["backstory"] = f"{current_backstory}\n\n --- Additional Knowledge ---\n{declaration}"
 
         knowledge_sources = []
-        if agent_name == "ai_activist":
-            # Reference document: European Declaration of Digital Rights and Principles
-            # https://digital-strategy.ec.europa.eu/en/library/european-declaration-digital-rights-and-principles
-            knowledge_sources = [PDFKnowledgeSource(file_paths=["European_Declaration_on_Digital_Rights_and_Principles.pdf"])]
-        if agent_name == "ai_digital_advocate":
-            # Reference document: the Global Digital Compact (Rev. 1)
-            # https://www.un.org/digital-emerging-technologies/sites/www.un.org.techenvoy/files/general/GDC_Rev_3_silence_procedure.pdf
-            knowledge_sources = [PDFKnowledgeSource(file_paths=["GDC_Rev_3_silence_procedure.pdf"])]
-        if agent_name == "sovereign_architect":
-            # Reference documents: Authoritarian Constitutionalism: Coming to Terms
-            # https://d-nb.info/1173926618/34
-            knowledge_sources = [
-                PDFKnowledgeSource(file_paths=["Authoritarian_Constitutionalism_coming_to_terms.pdf"]),
-                PDFKnowledgeSource(file_paths=["authoritarian-constitutionalism.pdf"]),
-                PDFKnowledgeSource(file_paths=["Introduction_Chapter_1_of_Constitutions_in_Authoritarian_Regi.pdf"])
-            ]
-        if agent_name == "ai_scholar_and_constitutional_translator":
-            # Reference document: Digital Constitutionalism: The Role of Internet Bills of Rights
-            # https://library.oapen.org/bitstream/handle/20.500.12657/75991/9781000685190.pdf?sequence=1&isAllowed=y
-            knowledge_sources = [PDFKnowledgeSource(file_paths=["digitalConstitutionalism.pdf"])]
-        if agent_name == "ai_digital_rights_constitutionalist":
-            # Reference document: Rights in the Digital Age: A Human Rights Approach to the Governance of AI
-            # https://www.idea.int/publications/catalogue/rights-digital-age
-            knowledge_sources = [PDFKnowledgeSource(file_paths=["rights-in-the-digital-age.pdf"])]
+        if "knowledge" in agent_details:
+            knowledge_files = agent_details.pop("knowledge")
+            if isinstance(knowledge_files, list):
+                knowledge_sources = [PDFKnowledgeSource(file_paths=[f]) for f in knowledge_files]
+            elif isinstance(knowledge_files, str):
+                knowledge_sources = [PDFKnowledgeSource(file_paths=[knowledge_files])]
 
 
         if agent_name == "secretary":
