@@ -1,0 +1,20 @@
+description: |
+  Based on the summaries of the preceding debate rounds and the raw transcripts, draft a concise and formal synthesis corresponding to: {parts}.
+  
+  Your output MUST be structured as a formal addition to a constitution. It should NOT be a full document.
+  
+  STRUCTURE REQUIREMENTS:
+  1. Consist of exactly 1 or 2 Articles.
+  2. Each Article must contain 3-5 specific sub-points or clauses.
+  3. Use systematic numbering (e.g., Article X.1, X.2).
+  4. Focus EXCLUSIVELY on the content directly related to the question of this part.
+  
+  Do NOT include a preamble, introduction, or sections for other parts. Focus on creating a modular "part" that can be integrated into a larger framework.
+expected_output: "1 or 2 numbered Articles with sub-points in Markdown format, specifically for the part being debated."
+output_file: "part_synthesis.md"
+agent: secretary
+context:
+  - 1ax_task_debate_opening_summary
+  - 1bx_task_debate_rebuttal1_summary
+  - 1cx_task_debate_rebuttal2_summary
+  - 2_task_summary

@@ -1,0 +1,18 @@
+description: |
+  Organize a formal vote on the synthesized constitutional articles provided in the context.
+  
+  The articles to vote on are in the synthesis report. You must:
+  1. Identify each Article and its specific sub-points.
+  2. Consult EACH of these agents: {debaters}.
+  3. For EACH INDIVIDUAL POINT, each agent must provide:
+     - Their vote (FOR or AGAINST).
+     - A brief justification (1-2 sentences) based on their persona and knowledge base.
+  
+  You must capture every agent's vote for every single point clearly.
+  
+  Finally, compile a report with: For each article, list the article title. Then, for each point, list the content of the point, followed by each agent's name, their vote (FOR/AGAINST), and their full justification.
+expected_output: "A complete voting report in Markdown with detailed results."
+agent: orchestrator
+context:
+  - 3p_task_part_synthesis
+output_file: "voting_report.md"

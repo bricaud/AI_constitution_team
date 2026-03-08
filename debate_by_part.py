@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 import datetime
 
 # --- SETTINGS ---
-CHOSEN_PART = 1  # Change this to 1, 2, 3, 4, or 5 to focus on a specific part
+CHOSEN_PART = 2  # Change this to 1, 2, 3, 4, or 5 to focus on a specific part
 INCLUDE_SOVEREIGN = True # To include the sovereign architect, set to True
 # ----------------
 
@@ -17,7 +17,7 @@ API_key = os.getenv("GOOGLE_API_KEY")
 
 # --- Model Configuration ---
 lite_llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite", verbose=True, temperature=0.7, google_api_key=API_key)
-flash_llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", verbose=True, temperature=0.3, google_api_key=API_key)
+flash_llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", verbose=True, temperature=0.1, google_api_key=API_key)
 pro_llm = ChatGoogleGenerativeAI(model="gemini-2.5-pro", verbose=True, temperature=0.3, google_api_key=API_key)
 
 # Load constitution parts
@@ -87,7 +87,8 @@ TASKS_ORDER = [
     "1c_task_debate_rebuttal2",
     "1cx_task_debate_rebuttal2_summary",
     "2_task_summary",
-    "3_task_synthesis"
+    "3p_task_part_synthesis",
+    "4_task_vote"
 ]
 
 # Load only the specified tasks
@@ -125,15 +126,19 @@ for task_name in TASKS_ORDER:
 
     # --- FOCUS ON ONE PART LOGIC ---
     part_desc = f"  {common_parts[CHOSEN_PART]}"
-    part_label = part_desc.split(')')[0] + ')' # e.g. "(Part 1)"
+    part_label = f"(Part {CHOSEN_PART} )" # e.g. "(Part 1)"
 
-    if "1a_task_debate_opening" in task_name or "3_task_synthesis" in task_name:
+    if "1a_task_debate_opening" in task_name or "3p_task_part_synthesis" in task_name:
         task_details["description"] = task_details["description"].format(
-            task_focus=f"ONLY {part_label} of a new",
             parts=part_desc
         )
-        if "3_task_synthesis" in task_name:
-            task_details["expected_output"] = f"A draft of ONLY {part_label} of the AI constitution in Markdown format."
+
+    if "4_task_vote" in task_name:
+        debaters_list = [name for name in agents.keys() if name not in ["orchestrator", "secretary"]]
+        task_details["description"] = task_details["description"].format(
+            debaters=", ".join(debaters_list)
+        )
+
 
     # If it is a debate task, add the list of agents and special instructions
     if "task_debate" in task_name and "_summary" not in task_name:
@@ -141,7 +146,7 @@ for task_name in TASKS_ORDER:
         task_details["description"] += (
             f"\n\nPreside over the debate between: {', '.join(debaters_list)}."
             " Use delegation tools to call on EACH agent once. "
-            " CRITICAL: Instruct all agents to be CONCISE (max 250 words per turn). "
+            " CRITICAL: Instruct all agents to be CONCISE (max 300 words per turn). "
             " Output the full transcript. Start each turn with the speaker's name and a brief summary."
         )
 

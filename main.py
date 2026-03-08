@@ -139,7 +139,6 @@ for task_name in TASKS_ORDER:
     # Handle placeholders in 1a and 3 tasks
     if "1a_task_debate_opening" in task_name or "3_task_synthesis" in task_name:
         task_details["description"] = task_details["description"].format(
-            task_focus="a draft of a new",
             parts=parts_text
         )
 
