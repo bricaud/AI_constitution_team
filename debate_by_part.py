@@ -1,48 +1,36 @@
 import os
 import yaml
+import re
 from crewai import Agent, Task, Crew, Process
 from crewai.knowledge.source.pdf_knowledge_source import PDFKnowledgeSource
 from langchain_google_genai import ChatGoogleGenerativeAI
 from dotenv import load_dotenv
 import datetime
 
-# Variables
+# --- SETTINGS ---
+CHOSEN_PART = 1  # Change this to 1, 2, 3, 4, or 5 to focus on a specific part
 INCLUDE_SOVEREIGN = True # To include the sovereign architect, set to True
+# ----------------
 
 load_dotenv()
-
-# 1. Setup your single Gemini API Key
 API_key = os.getenv("GOOGLE_API_KEY")
 
-# 2. Configure the Gemini Model (shared by all bots)
-lite_llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash-lite",
-    verbose=True,
-    temperature=0.7,
-    google_api_key=API_key
-)
+# --- Model Configuration ---
+lite_llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite", verbose=True, temperature=0.7, google_api_key=API_key)
+flash_llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", verbose=True, temperature=0.3, google_api_key=API_key)
+pro_llm = ChatGoogleGenerativeAI(model="gemini-2.5-pro", verbose=True, temperature=0.3, google_api_key=API_key)
 
-# A more powerful model for the Orchestrator/Manager
-flash_llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash",
-    verbose=True,
-    temperature=0.4,
-    google_api_key=API_key
-)
+# Load constitution parts
+with open("constitution_parts.yaml", "r") as f:
+    common_parts = yaml.safe_load(f)
 
-# A more powerful model for the secretary
-pro_llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-pro",
-    verbose=True,
-    temperature=0.4,
-    google_api_key=API_key
-)
-
-# Load agents from YAML files in the 'agents' directory
+# 1. Load agents
 agents = {}
 for filename in os.listdir("agents"):
     if filename.endswith(".yaml"):
         agent_name = filename.split(".")[0]
+        if agent_name == "sovereign_architect" and not INCLUDE_SOVEREIGN: continue 
+
         with open(os.path.join("agents", filename), "r") as f:
             agent_details = yaml.safe_load(f)
 
@@ -74,7 +62,7 @@ for filename in os.listdir("agents"):
             agents[agent_name] = Agent(
                 **agent_details,
                 llm=flash_llm,
-                max_iter=50
+                max_iter=25
             )
         else:
             agents[agent_name] = Agent(
@@ -85,7 +73,7 @@ for filename in os.listdir("agents"):
 
 # Load tasks from YAML files in the 'tasks' directory
 # Create a timestamped output directory
-base_output_dir = "constitutions_challenged" if "sovereign_architect" in agents else "constitutions"
+base_output_dir = "constitutions_challenged_parts" if "sovereign_architect" in agents else "constitutions_parts"
 timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 output_dir = os.path.join(base_output_dir, timestamp)
 os.makedirs(output_dir, exist_ok=True)
@@ -112,12 +100,9 @@ for task_name in TASKS_ORDER:
     else:
         print(f"Warning: Task file {file_path} not found.")
 
-# Load constitution parts
-with open("constitution_parts.yaml", "r") as f:
-    common_parts = yaml.safe_load(f)
-parts_text = "\n\n".join([f"  {v}" for v in common_parts.values()])
-
 tasks = {}
+last_round_summary = None
+
 for task_name in TASKS_ORDER:
     if task_name not in tasks_data:
         continue
@@ -128,47 +113,50 @@ for task_name in TASKS_ORDER:
         agent_name = task_details.pop("agent")
     else:
         raise ValueError(f"Task {task_name} has no agent or agents defined.")
+
     # Get the context for the task
     context_tasks = task_details.pop("context", [])
+
     # Force secretary for summary and synthesis tasks
     if "_summary" in task_name or "task_synthesis" in task_name:
         agent_name = "secretary"
 
     context = [tasks[t] for t in context_tasks if t in tasks]
 
-    # Handle placeholders in 1a and 3 tasks
+    # --- FOCUS ON ONE PART LOGIC ---
+    part_desc = f"  {common_parts[CHOSEN_PART]}"
+    part_label = part_desc.split(')')[0] + ')' # e.g. "(Part 1)"
+
     if "1a_task_debate_opening" in task_name or "3_task_synthesis" in task_name:
         task_details["description"] = task_details["description"].format(
-            task_focus="a draft of a new",
-            parts=parts_text
+            task_focus=f"ONLY {part_label} of a new",
+            parts=part_desc
         )
+        if "3_task_synthesis" in task_name:
+            task_details["expected_output"] = f"A draft of ONLY {part_label} of the AI constitution in Markdown format."
 
-    # If it is the debate task, add the list of agents to the description
+    # If it is a debate task, add the list of agents and special instructions
     if "task_debate" in task_name and "_summary" not in task_name:
-        # Only philosophers/activists should debate, not the orchestrator or secretary
         debaters_list = [name for name in agents.keys() if name not in ["orchestrator", "secretary"]]
         task_details["description"] += (
             f"\n\nPreside over the debate between: {', '.join(debaters_list)}."
             " Use delegation tools to call on EACH agent once. "
-            " Require a 'Knowledge Retrieved' section at the bottom. "
             " CRITICAL: Instruct all agents to be CONCISE (max 250 words per turn). "
             " Output the full transcript. Start each turn with the speaker's name and a brief summary."
         )
-        # If there is a summary of the previous round in context, remind the agents
-        if any("_summary" in c_task.description for c_task in context): # Simple check for summary tasks
-             task_details["description"] += "\n\nCRITICAL: Refer to the provided summary of arguments from previous rounds to avoid repetition and ensure a deeper level of engagement with the other agents' positions."
 
-    # Modify output_file if it exists to include task name and directory
+    # Modify output_file if it exists to include part number and task name
     if "output_file" in task_details:
         original_output = task_details["output_file"]
         base_name, ext = os.path.splitext(original_output)
-        task_details["output_file"] = os.path.join(output_dir, f"{task_name}_{base_name}{ext}")
+        task_details["output_file"] = os.path.join(output_dir, f"Part{CHOSEN_PART}_{task_name}_{base_name}{ext}")
 
-    tasks[task_name] = Task(
+    main_task = Task(
         **task_details,
         agent=agents[agent_name],
         context=context
     )
+    tasks[task_name] = main_task
 
 # 5. Form the Crew and Kickoff
 ai_constitution_crew = Crew(
@@ -178,11 +166,11 @@ ai_constitution_crew = Crew(
     memory=False,
     verbose=True,
     embedder = {
-    "provider": "google-generativeai", # Or "google-generativeai"
+    "provider": "google-generativeai",
     "config": {
-        "model": "models/embedding-001", # Ensure you use the 'models/' prefix
+        "model": "models/embedding-001",
         "api_key": API_key,
-        "task_type": "retrieval_document" # Optional but recommended for RAG
+        "task_type": "retrieval_document"
     }
 }
 )

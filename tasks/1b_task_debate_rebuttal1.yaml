@@ -3,4 +3,4 @@ expected_output: "A full transcript of the first round of rebuttals."
 output_file: "rebuttals_round1.md"
 agent: orchestrator
 context:
-  - 1a_task_debate_opening
+  - 1ax_task_debate_opening_summary

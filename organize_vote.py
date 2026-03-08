@@ -65,12 +65,36 @@ def parse_articles(filepath):
     
     # regex to find articles
     # Looking for ### Article X: Title or similar
-    articles = re.findall(r'(### Article \d+:.*?)(?=\n### Article \d+:|\n## |\n---|\Z)', content, re.DOTALL)
+    articles_raw = re.findall(r'(### Article \d+:.*?)(?=\n### Article \d+:|\n## |\n---|\Z)', content, re.DOTALL)
     # If no ### articles, try ## articles as fallback
-    if not articles:
-        articles = re.findall(r'(## Article \d+:.*?)(?=\n## Article \d+:|\n## |\n---|\Z)', content, re.DOTALL)
+    if not articles_raw:
+        articles_raw = re.findall(r'(## Article \d+:.*?)(?=\n## Article \d+:|\n## |\n---|\Z)', content, re.DOTALL)
         
-    return [a.strip() for a in articles]
+    parsed_articles = []
+    for art in articles_raw:
+        lines = art.strip().split('\n')
+        title = lines[0].replace('###', '').replace('##', '').strip()
+        
+        # Regex to find points: numbered list or bullet points at the start of a line
+        # We look for something like '1. ', '2. ', or '* '
+        # We want to capture the point and keep everything until the next point or end of article.
+        points = re.findall(r'(?m)^(\d+\.\s+.*?|(?:\*|\-)\s+.*?)(?=\n(?:\d+\.\s+|(?:\*|\-)\s+)|\Z)', art, re.DOTALL)
+        
+        if not points:
+            # If no list points found, the whole content (minus title) is a single point
+            body = "\n".join(lines[1:]).strip()
+            if body:
+                points = [body]
+            else:
+                points = [title] # Fallback
+        
+        parsed_articles.append({
+            "title": title,
+            "full_content": art.strip(),
+            "points": [p.strip() for p in points]
+        })
+        
+    return parsed_articles
 
 def main():
     if len(sys.argv) < 2:
@@ -103,19 +127,22 @@ def main():
     
     print(f"Organizing vote on {len(articles)} articles with {len(debaters_list)} agents...")
 
-    for i, article in enumerate(articles):
-        article_title = article.split('\n')[0].replace('###', '').replace('##', '').strip()
+    for i, article_data in enumerate(articles):
+        article_title = article_data['title']
+        points_list = article_data['points']
+        points_str = "\n".join([f"- Point {j+1}: {p}" for j, p in enumerate(points_list)])
+        
         task = Task(
             description=(
                 f"Organize a formal vote on the following article: {article_title}.\n\n"
-                f"Article Content:\n{article}\n\n"
+                f"This article consists of the following specific points:\n{points_str}\n\n"
                 f"You must consult EACH of these agents: {', '.join(debaters_list)}.\n"
-                "Each agent must provide:\n"
+                "For EACH INDIVIDUAL POINT, each agent must provide:\n"
                 "1. Their vote (FOR or AGAINST).\n"
                 "2. A brief justification (1-2 sentences) based on their persona and knowledge base.\n\n"
-                "Ensure you capture every agent's vote clearly in your output. Do not skip any agent."
+                "Ensure you capture every agent's vote for every single point clearly in your output. Do not skip any agent or any point."
             ),
-            expected_output=f"A clear summary of votes (FOR/AGAINST) and justifications from all agents for '{article_title}'.",
+            expected_output=f"A clear summary of votes (FOR/AGAINST) and justifications from all agents for EACH POINT of '{article_title}'.",
             agent=agents["orchestrator"]
         )
         voting_tasks.append(task)
@@ -124,15 +151,15 @@ def main():
     report_task = Task(
         description=(
             "You are the secretary for the AI Constitution voting process. "
-            "Your task is to compile a final report based on the voting results of all articles provided in the context.\n\n"
+            "Your task is to compile a final report based on the voting results of all articles and their individual points provided in the context.\n\n"
             "The report MUST follow this structure:\n"
-            "1. **Detailed Voting Results**: For each article, list the article title followed by each agent's name, their vote (FOR/AGAINST), and their full justification/point of view in plain text.\n"
+            "1. **Detailed Voting Results**: For each article, list the article title. Then, for each point, list the content of the point, followed by each agent's name, their vote (FOR/AGAINST), and their full justification.\n"
             "2. **Summary Voting Table**: At the very end, provide a single, concise Markdown table with exactly these columns:\n"
-            "   - **Article**: The title of the article.\n"
+            "   - **Article Section / Point**: The title of the article and a short snippet of the point.\n"
             "   - **For**: Comma-separated list of agent names who voted FOR.\n"
             "   - **Against**: Comma-separated list of agent names who voted AGAINST.\n"
             "   Do NOT include any commentary, arguments, or extra columns in this summary table.\n\n"
-            "Ensure the report is professional, objective, and accurately reflects all votes recorded by the orchestrator."
+            "Ensure the report is professional, objective, and accurately reflects all votes recorded by the orchestrator for every single point."
         ),
         expected_output="A complete voting report in Markdown with detailed results followed by a concise summary table.",
         agent=agents["secretary"],

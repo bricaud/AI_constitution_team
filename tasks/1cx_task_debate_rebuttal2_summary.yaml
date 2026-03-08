@@ -1,0 +1,10 @@
+description: |
+  Based on the transcript of the final round of the debate, extract and provide a definitive summary of the specific final propositions and arguments made by EACH agent separately. 
+  Focus on what they proposed and their final reasoning. 
+  Format this as a structured Markdown document where each agent's contribution is clearly identified.
+  This document serves as the final official record of agent positions.
+expected_output: "A structured Markdown document listing final agent propositions and arguments."
+output_file: "final_round_arguments.md"
+agent: secretary
+context:
+  - 1c_task_debate_rebuttal2

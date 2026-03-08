@@ -20,5 +20,8 @@ output_file: "summary.md"
 agent: secretary
 context:
   - 1a_task_debate_opening
+  - 1ax_task_debate_opening_summary
   - 1b_task_debate_rebuttal1
+  - 1bx_task_debate_rebuttal1_summary
   - 1c_task_debate_rebuttal2
+  - 1cx_task_debate_rebuttal2_summary

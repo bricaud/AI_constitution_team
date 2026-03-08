@@ -1,20 +1,16 @@
 description: |
-  Synthesise the debate and the summary to create a draft of a new 'Constitution of the AI community' for AI models, their developers and users. The constitution should contain the following sections that reflect the points of agreement and compromise on the points of conflict:
+  Synthesise the debate and the summary to create {task_focus} 'Constitution of the AI community' for AI models, their developers and users.
+  
+  CRITICAL REQUIREMENT: For easier reference, ensure that EVERY article and EACH INDIVIDUAL POINT OR CLAUSE within the articles is systematically numbered (e.g., Article 1.1, 1.2, or 1., 2., 3. under each Article title).
+  
+  The constitution should contain the following sections that reflect the points of agreement and compromise on the points of conflict:
 
-  (Part 1) the Preamble briefly outlines the main ideals, values, modern historical context and aspirations of the Constitution;
-
-  (Part 2) Fundamental Rights and Freedoms (AI Bill of Rights) of AI agents, developers, users and vulnerable groups (for instance, children and youth), as well as setting obligations and red lines that cannot be crossed. This section can include both negative rights (for example, freedom from censorship or abuse) and positive rights (entitlements to responsible collaboration, learning, etc.);
-
-  (Part 3) Independent Institutions to be established to oversee the further development of the constitution as a 'living document' reflecting the modern development of AI technology, and provide advice on its interpretation.
-
-  (Part 4) Amendment Procedures that will ensure the constitution is a 'living document', providing stability, flexibility, and certainty in the future.
-
-  (Part 5) Transitional Provisions and Schedules containing a proposed timeframe (i.e. eternity clause for some 'unchangeable core values'), recommendations on how to implement and improve the constitution, uphold its credibility and influence as a joint standard and a point of reference among all actors of the global AI community.
+  {parts}
 expected_output: "A draft of the AI constitution with a preamble and articles in Markdown format."
 output_file: "draft_constitution.md"
 agent: secretary
 context:
-  - 1a_task_debate_opening
-  - 1b_task_debate_rebuttal1
-  - 1c_task_debate_rebuttal2
+  - 1ax_task_debate_opening_summary
+  - 1bx_task_debate_rebuttal1_summary
+  - 1cx_task_debate_rebuttal2_summary
   - 2_task_summary
