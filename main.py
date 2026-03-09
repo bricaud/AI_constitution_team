@@ -8,6 +8,7 @@ import datetime
 
 # Variables
 INCLUDE_SOVEREIGN = True # To include the sovereign architect, set to True
+PARTS_TO_INCLUDE = [1, 2, 3, 4, 5] # List of part keys from constitution_parts.yaml
 
 load_dotenv()
 
@@ -115,7 +116,8 @@ for task_name in TASKS_ORDER:
 # Load constitution parts
 with open("constitution_parts.yaml", "r") as f:
     common_parts = yaml.safe_load(f)
-parts_text = "\n\n".join([f"  {v}" for v in common_parts.values()])
+# Flexible part loading based on PARTS_TO_INCLUDE list
+parts_text = "\n\n".join([f"  {common_parts[p]}" for p in PARTS_TO_INCLUDE if p in common_parts])
 
 tasks = {}
 for task_name in TASKS_ORDER:
