@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 import datetime
 
 # --- SETTINGS ---
-CHOSEN_PART = 6  # Change this to 1, 2, 3, 4, or 5 to focus on a specific part
+CHOSEN_PART = 8  # Change this to 1, 2, 3, 4, or 5 to focus on a specific part
 INCLUDE_SOVEREIGN = True # To include the sovereign architect, set to True
 # ----------------
 
