@@ -1,8 +1,8 @@
 import os
 import yaml
-from crewai import Agent, Task, Crew, Process
+from crewai import Agent, Task, Crew, Process, LLM
 from crewai.knowledge.source.pdf_knowledge_source import PDFKnowledgeSource
-from langchain_google_genai import ChatGoogleGenerativeAI
+#from langchain_google_genai import ChatGoogleGenerativeAI
 from dotenv import load_dotenv
 import datetime
 
@@ -16,28 +16,13 @@ load_dotenv()
 API_key = os.getenv("GOOGLE_API_KEY")
 
 # 2. Configure the Gemini Model (shared by all bots)
-lite_llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash-lite",
-    verbose=True,
-    temperature=0.7,
-    google_api_key=API_key
-)
+lite_llm = LLM(model="gemini/gemini-2.5-flash-lite", temperature=0.7, api_key=API_key)
 
 # A more powerful model for the Orchestrator/Manager
-flash_llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash",
-    verbose=True,
-    temperature=0.4,
-    google_api_key=API_key
-)
+flash_llm = LLM(model="gemini/gemini-2.5-flash", temperature=0.4, api_key=API_key)
 
 # A more powerful model for the secretary
-pro_llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-pro",
-    verbose=True,
-    temperature=0.4,
-    google_api_key=API_key
-)
+pro_llm = LLM(model="gemini/gemini-2.5-pro", temperature=0.4, api_key=API_key)
 
 # Load agents from YAML files in the 'agents' directory
 agents = {}

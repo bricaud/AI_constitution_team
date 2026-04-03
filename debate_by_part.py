@@ -1,11 +1,12 @@
 import os
 import yaml
 import re
-from crewai import Agent, Task, Crew, Process
+from crewai import Agent, Task, Crew, Process, LLM
 from crewai.knowledge.source.pdf_knowledge_source import PDFKnowledgeSource
-from langchain_google_genai import ChatGoogleGenerativeAI
 from dotenv import load_dotenv
 import datetime
+from memory_manager import DebateMemory
+#from langchain_google_genai import ChatGoogleGenerativeAI
 
 # --- SETTINGS ---
 CHOSEN_PART = 8  # Change this to 1, 2, 3, 4, or 5 to focus on a specific part
@@ -16,9 +17,20 @@ load_dotenv()
 API_key = os.getenv("GOOGLE_API_KEY")
 
 # --- Model Configuration ---
-lite_llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite", verbose=True, temperature=0.7, google_api_key=API_key)
-flash_llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", verbose=True, temperature=0.1, google_api_key=API_key)
-pro_llm = ChatGoogleGenerativeAI(model="gemini-2.5-pro", verbose=True, temperature=0.3, google_api_key=API_key)
+lite_llm = LLM(model="gemini/gemini-2.5-flash-lite", temperature=0.7, api_key=API_key)
+flash_llm = LLM(model="gemini/gemini-2.5-flash", temperature=0.1, api_key=API_key)
+pro_llm = LLM(model="gemini/gemini-2.5-pro", temperature=0.3, api_key=API_key)
+
+
+# 2. Configure the Gemini Model (shared by all bots)
+#lite_llm = LLM(model="gemini/gemini-1.5-flash-lite", temperature=0.7)
+
+# A more powerful model for the Orchestrator/Manager
+#flash_llm = LLM(model="gemini/gemini-1.5-flash", temperature=0.4)
+
+# A more powerful model for the secretary
+#pro_llm = LLM(model="gemini/gemini-1.5-pro", temperature=0.4)
+
 
 # Load constitution parts
 with open("constitution_parts.yaml", "r") as f:
@@ -77,6 +89,9 @@ base_output_dir = "constitutions_challenged_parts" if "sovereign_architect" in a
 timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 output_dir = os.path.join(base_output_dir, timestamp)
 os.makedirs(output_dir, exist_ok=True)
+
+# --- Shared mem0 memory (persists across runs) ---
+debate_memory = DebateMemory(run_id=timestamp)
 
 # Define the list of tasks to execute in order
 TASKS_ORDER = [
@@ -156,6 +171,17 @@ for task_name in TASKS_ORDER:
         base_name, ext = os.path.splitext(original_output)
         task_details["output_file"] = os.path.join(output_dir, f"Part{CHOSEN_PART}_{task_name}_{base_name}{ext}")
 
+    # --- Inject relevant memories from past debates into the task description ---
+    if "task_debate" in task_name or "task_synthesis" in task_name or "task_summary" in task_name:
+        part_topic = common_parts.get(CHOSEN_PART, "")
+        recalled = debate_memory.recall(
+            topic=part_topic,
+            top_k=5,
+            part=CHOSEN_PART,
+        )
+        if recalled:
+            task_details["description"] += f"\n\n{recalled}"
+
     main_task = Task(
         **task_details,
         agent=agents[agent_name],
@@ -181,3 +207,14 @@ ai_constitution_crew = Crew(
 )
 
 result = ai_constitution_crew.kickoff()
+
+# --- Save each task output to shared memory ---
+for task_name, task_obj in tasks.items():
+    if task_obj.output and task_obj.output.raw:
+        debate_memory.save(
+            content=task_obj.output.raw,
+            task_name=task_name,
+            part=CHOSEN_PART,
+        )
+print(f"[DebateMemory] All outputs from run '{timestamp}' saved to shared memory.")
+debate_memory.close()

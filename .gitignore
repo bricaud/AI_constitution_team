@@ -10,3 +10,6 @@ __pycache__
 
 # Knowledge base (excluded for copyright reasons)
 knowledge/
+
+# Memory
+mem0_data/

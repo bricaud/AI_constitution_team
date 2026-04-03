@@ -2,3 +2,5 @@ crewai
 langchain-google-genai
 python-dotenv
 pyyaml
+mem0ai
+qdrant-client
