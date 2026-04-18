@@ -10,26 +10,27 @@ from memory_manager import DebateMemory
 
 # --- SETTINGS ---
 CHOSEN_PART = 8  # Change this to 1, 2, 3, 4, or 5 to focus on a specific part
-INCLUDE_SOVEREIGN = True # To include the sovereign architect, set to True
+INCLUDE_SOVEREIGN = True  # To include the sovereign architect, set to True
+CHOSEN_MODEL = "gemini"   # Options: "gemini", "deepseek", "mistral", "gpt-oss"
 # ----------------
 
 load_dotenv()
-API_key = os.getenv("GOOGLE_API_KEY")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
-# --- Model Configuration ---
-lite_llm = LLM(model="gemini/gemini-2.5-flash-lite", temperature=0.7, api_key=API_key)
-flash_llm = LLM(model="gemini/gemini-2.5-flash", temperature=0.1, api_key=API_key)
-pro_llm = LLM(model="gemini/gemini-2.5-pro", temperature=0.3, api_key=API_key)
+MODELS = {
+    "gemini":   "openrouter/google/gemini-2.5-flash",
+    "deepseek": "openrouter/deepseek/deepseek-chat-v3-0324",
+    "mistral":  "openrouter/mistralai/mistral-small-3.2-24b-instruct",
+    "gpt-oss":  "openrouter/openai/gpt-4.1-mini",
+}
 
-
-# 2. Configure the Gemini Model (shared by all bots)
-#lite_llm = LLM(model="gemini/gemini-1.5-flash-lite", temperature=0.7)
-
-# A more powerful model for the Orchestrator/Manager
-#flash_llm = LLM(model="gemini/gemini-1.5-flash", temperature=0.4)
-
-# A more powerful model for the secretary
-#pro_llm = LLM(model="gemini/gemini-1.5-pro", temperature=0.4)
+llm = LLM(
+    model=MODELS[CHOSEN_MODEL],
+    api_key=OPENROUTER_API_KEY,
+    base_url=OPENROUTER_BASE_URL,
+    temperature=0.7,
+)
 
 
 # Load constitution parts
@@ -51,9 +52,7 @@ for filename in os.listdir("agents"):
             continue # Skip this agent
 
         if "declaration" in agent_details:
-            declaration = agent_details.pop("declaration")
-            current_backstory = agent_details.get("backstory", "")
-            agent_details["backstory"] = f"{current_backstory}\n\n --- Additional Knowledge ---\n{declaration}"
+            agent_details.pop("declaration")
 
         knowledge_sources = []
         if "knowledge" in agent_details:
@@ -64,30 +63,17 @@ for filename in os.listdir("agents"):
                 knowledge_sources = [PDFKnowledgeSource(file_paths=[knowledge_files])]
 
 
-        if agent_name == "secretary":
-            agents[agent_name] = Agent(
-                **agent_details,
-                llm=pro_llm,
-                max_iter=50
-            )
-        elif agent_name == "orchestrator":
-            agents[agent_name] = Agent(
-                **agent_details,
-                llm=flash_llm,
-                max_iter=25
-            )
-        else:
-            agents[agent_name] = Agent(
-                **agent_details,
-                llm=lite_llm,
-                knowledge_sources=knowledge_sources if knowledge_sources else None
-            )
+        agents[agent_name] = Agent(
+            **agent_details,
+            llm=llm,
+            knowledge_sources=knowledge_sources if knowledge_sources else None
+        )
 
 # Load tasks from YAML files in the 'tasks' directory
 # Create a timestamped output directory
 base_output_dir = "constitutions_challenged_parts" if "sovereign_architect" in agents else "constitutions_parts"
 timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-output_dir = os.path.join(base_output_dir, timestamp)
+output_dir = os.path.join(base_output_dir, f"{timestamp}_{CHOSEN_MODEL}")
 os.makedirs(output_dir, exist_ok=True)
 
 # --- Shared mem0 memory (persists across runs) ---
@@ -196,14 +182,14 @@ ai_constitution_crew = Crew(
     process=Process.sequential,
     memory=False,
     verbose=True,
-    embedder = {
-    "provider": "google-generativeai",
-    "config": {
-        "model": "models/embedding-001",
-        "api_key": API_key,
-        "task_type": "retrieval_document"
+    embedder={
+        "provider": "openai",
+        "config": {
+            "model": "google/gemini-embedding-001",
+            "api_key": OPENROUTER_API_KEY,
+            "api_base": "https://openrouter.ai/api/v1",
+        },
     }
-}
 )
 
 result = ai_constitution_crew.kickoff()
@@ -218,3 +204,25 @@ for task_name, task_obj in tasks.items():
         )
 print(f"[DebateMemory] All outputs from run '{timestamp}' saved to shared memory.")
 debate_memory.close()
+
+# --- Save run metadata ---
+import json
+usage = result.token_usage
+metadata = {
+    "part": CHOSEN_PART,
+    "include_sovereign": INCLUDE_SOVEREIGN,
+    "model_name": CHOSEN_MODEL,
+    "model_id": MODELS[CHOSEN_MODEL],
+    "timestamp": timestamp,
+    "token_usage": {
+        "total_tokens": usage.total_tokens,
+        "prompt_tokens": usage.prompt_tokens,
+        "completion_tokens": usage.completion_tokens,
+        "cached_prompt_tokens": usage.cached_prompt_tokens,
+        "successful_requests": usage.successful_requests,
+    },
+}
+with open(os.path.join(output_dir, "metadata.json"), "w") as f:
+    json.dump(metadata, f, indent=2)
+print(f"Tokens used: {usage.total_tokens:,} total "
+      f"({usage.prompt_tokens:,} prompt, {usage.completion_tokens:,} completion)")

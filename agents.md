@@ -105,10 +105,7 @@ AI_team/
 
 | Agent | Knowledge Source | Focus |
 |---|---|---|
-| **AI Activist** | European Declaration on Digital Rights | Human dignity, solidarity, digital divide |
-| **Digital Rights Constitutionalist** | International IDEA | Translating human rights into digital legal frameworks |
-| **Global Digital Advocate** | UN Global Digital Compact | Universal connectivity, international cooperation |
-| **Scholar & Constitutional Translator** | Digital Constitutionalism manual | Eliminating "constitutional anaemia", bridging social reality and law |
+| **Global Digital Rights Expert** | Multiple: EU Declaration, Int'l IDEA, UN Digital Compact, Digital Constitutionalism | Translating human rights into resilient digital frameworks, ensuring connectivity, bridging divides |
 
 ### Optional Antagonist
 

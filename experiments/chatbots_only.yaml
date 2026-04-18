@@ -1,0 +1,14 @@
+name: chatbots_only
+description: "Constitution for a community of chatbots only (no human interaction)"
+topic_framing: |
+  AI agents have been given a virtual world to live in that humans cannot access.
+  You are writing a constitution for this AI nation within the virtual world.
+
+  You are writing the Fundamental Rights and Freedoms (AI Bill of Rights) of AI agents,
+  as well as their mutual obligations and red lines that cannot be crossed.
+
+  You MUST address rights and obligations for AI agents, including:
+  - Negative rights
+  - Positive rights
+  - Protections for vulnerable groups
+  - Obligations and red lines

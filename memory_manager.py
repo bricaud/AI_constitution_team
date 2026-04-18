@@ -4,13 +4,17 @@ memory_manager.py
 Shared mem0 memory layer for the AI constitution debate agents.
 
 Uses the open-source (self-hosted) mem0 stack with:
-  - LLM:      Google Gemini (gemini-2.5-flash)
-  - Embedder: Google text-embedding-004
-  - Vector store: local Qdrant (in-memory / persistent at ./mem0_data)
+  - LLM:        OpenRouter (google/gemini-2.0-flash-001) via openai-compatible provider
+  - Embedder:   fastembed (BAAI/bge-small-en-v1.5, local, no API key needed)
+  - Vector store: local Qdrant (persistent at ./mem0_data)
 
 All agents share the same `run_id` so they can retrieve context from
 previous debate sessions.  After each task output is written, call
 `save_debate_output()` to persist the result.
+
+NOTE: If you have existing mem0_data from the previous Google embedder
+(1536 dims), delete that directory before running — the new embedder
+produces 384-dimensional vectors and the dimensions are incompatible.
 
 Usage
 -----
@@ -36,29 +40,26 @@ COLLECTION_NAME = "constitution_debates"
 
 
 def _build_config(api_key: str) -> dict:
-    """Build mem0 config using Google Gemini for LLM + embedder, local Qdrant for storage."""
+    """Build mem0 config using OpenRouter for LLM, fastembed for embeddings, local Qdrant."""
     return {
         "llm": {
-            "provider": "gemini",
+            "provider": "openai",
             "config": {
-                "model": "gemini-2.5-flash",
-                "api_key": api_key,
+                "model": "google/gemini-2.0-flash-001",
+                "openai_api_key": api_key,
+                "openai_api_base": "https://openrouter.ai/api/v1",
                 "temperature": 0.1,
             },
         },
         "embedder": {
-            "provider": "gemini",
+            "provider": "fastembed",
             "config": {
-                # "model": "gemini-embedding-001",
-                "model": "gemini-embedding-001",
-                "api_key": api_key,
-                "embedding_dims": 1536,
+                "model": "BAAI/bge-small-en-v1.5",
             },
         },
         "vector_store": {
             "provider": "qdrant",
             "config": {
-                # Persistent local storage – no Docker needed
                 "path": "./mem0_data",
                 "collection_name": COLLECTION_NAME,
                 "on_disk": True,
@@ -79,9 +80,9 @@ class DebateMemory:
     """
 
     def __init__(self, run_id: Optional[str] = None):
-        api_key = os.getenv("GOOGLE_API_KEY")
+        api_key = os.getenv("OPENROUTER_API_KEY")
         if not api_key:
-            raise EnvironmentError("GOOGLE_API_KEY is not set in your environment / .env file.")
+            raise EnvironmentError("OPENROUTER_API_KEY is not set in your environment / .env file.")
 
         os.makedirs("./mem0_data", exist_ok=True)
 
