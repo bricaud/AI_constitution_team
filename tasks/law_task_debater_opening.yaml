@@ -1,0 +1,12 @@
+description: |
+  You are reviewing the following law text: **{law_title}**
+
+  ---
+  {law_text}
+  ---
+
+  Give your opening statement (max 300 words). In your statement:
+  1) Identify 2-3 specific articles or clauses you believe need improvement, clarification, or revision.
+  2) Explain why those provisions are problematic or insufficient, drawing on your unique perspective and knowledge base.
+  3) Propose a high-level direction for improvement.
+expected_output: "A concise opening statement (max 300 words) identifying specific articles to improve and proposing directions for revision."

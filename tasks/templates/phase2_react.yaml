@@ -1,0 +1,15 @@
+description: |
+  You are reviewing constitutional proposals submitted by all participants (anonymized and
+  grouped by theme). The topic is:
+
+  {topic_framing}
+
+  Go through the proposals and state your position on each article:
+
+  - **SUPPORT**: just write "Support" — no explanation needed.
+  - **OPPOSE**: write "Oppose" + 1-2 sentences on why.
+  - **MODIFY**: write "Modify" + 2-3 sentences specifying the change you want.
+
+  Be terse. Only articles you oppose or want to modify need any text.
+expected_output: "A compact Markdown list of each article with your verdict (Support / Oppose / Modify) and minimal text only where needed."
+output_file: "phase2_react.md"

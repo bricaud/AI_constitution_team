@@ -1,0 +1,9 @@
+description: |
+  Based on the first round of rebuttals from all participants (provided in context), write a structured summary.
+  For each participant, record:
+  - Their response to others' proposals (agreements, disagreements, refinements).
+  - Any new proposals or positions they introduced.
+  Note emerging points of consensus and persistent disagreements.
+  Format as a structured Markdown document, one section per participant.
+expected_output: "A structured Markdown document summarising each participant's first rebuttal, with emerging consensus and conflicts noted."
+output_file: "rebuttal1_summary.md"

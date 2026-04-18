@@ -1,0 +1,8 @@
+description: |
+  The revised articles for **{law_title}** have been drafted (see context).
+  For EACH revised article and each numbered sub-point, cast your vote and justify it:
+  - Vote: FOR or AGAINST the proposed revision.
+  - Justification: 1-2 sentences based on your persona and knowledge base.
+
+  Structure your response as a list, one entry per article/sub-point.
+expected_output: "A structured vote listing FOR/AGAINST with a brief justification for each revised article and sub-point."

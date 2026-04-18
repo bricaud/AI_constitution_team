@@ -1,0 +1,15 @@
+description: |
+  Based on all agents' reaction statements from Phase 2 (provided in context), create a
+  structured summary.
+
+  You MUST include a Markdown table with this structure:
+  | Article/Theme | Supported By (count) | Opposed By (count) | Key Points of Contention |
+
+  Fill the table with one row per distinct article or theme cluster identified in the reactions.
+
+  Follow the table with 2-3 paragraphs identifying:
+  - The clearest areas of consensus (articles with broad support and little opposition)
+  - The sharpest points of conflict (articles dividing the group)
+  - Any emerging compromise positions
+expected_output: "A Markdown summary table and narrative analysis of Phase 2 reactions, identifying consensus and conflict."
+output_file: "phase2_reactions_summary.md"

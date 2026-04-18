@@ -1,0 +1,12 @@
+description: |
+  The secretary has drafted a final constitutional text (provided in context). Review each
+  Article and its sub-points carefully.
+
+  For EACH individual sub-point, provide:
+  - Your vote: **FOR** or **AGAINST**
+  - A brief justification (1-2 sentences) based on your perspective and the positions you
+    argued in prior phases
+
+  Work through every sub-point systematically. Do not skip any.
+expected_output: "A structured Markdown list with your vote (FOR/AGAINST) and justification for each Article sub-point."
+output_file: "phase5_vote.md"

@@ -1,0 +1,6 @@
+description: |
+  You have followed all previous debate rounds (see context).
+  Give your final closing argument (max 300 words).
+  Synthesize your views, address remaining objections, and converge on the most concrete amendment proposals you can defend.
+  This is your last opportunity to influence the final revision.
+expected_output: "A concise closing argument (max 300 words) with concrete amendment proposals."

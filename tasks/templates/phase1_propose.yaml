@@ -1,0 +1,16 @@
+description: |
+  You are participating in drafting a constitution. The topic is:
+
+  {topic_framing}
+
+  Working INDEPENDENTLY — you cannot see what other participants will propose — suggest 3 to 4
+  specific constitutional articles you believe should be included.
+
+  For each article:
+  - Give it a concise title
+  - Write 2-3 concrete sub-points or clauses
+  - Briefly justify why this article matters (2-3 sentences maximum)
+
+  Ground your proposals in your specific expertise and perspective. Be concrete, not generic.
+expected_output: "3-4 constitutional articles with sub-points and brief justifications, formatted in Markdown."
+output_file: "phase1_propose.md"

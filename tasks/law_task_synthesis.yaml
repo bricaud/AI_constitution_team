@@ -1,0 +1,13 @@
+description: |
+  Based on the debate summaries (provided in context), draft a formal set of improved articles for: **{law_title}**.
+
+  STRUCTURE REQUIREMENTS:
+  1. For each article that was debated and flagged for improvement, produce a revised version using the original article number and title (e.g., "Article 1: Definitions — Revised").
+  2. Each revised article must contain the full revised text, with sub-points numbered to match the original structure where possible.
+  3. After each revised article, include a brief "Rationale" note (2-3 sentences) explaining what changed and why, drawing from the debate.
+  4. If the debate identified a gap requiring a new article, add it at the end under "Proposed New Article".
+  5. Focus EXCLUSIVELY on articles substantively discussed in the debate.
+
+  Do NOT reproduce articles that were not discussed. Do NOT include a preamble or meta-commentary.
+expected_output: "A formal set of revised legal articles in Markdown, with rationale notes per article, ready for voting."
+output_file: "law_synthesis.md"

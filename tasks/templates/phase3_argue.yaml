@@ -1,0 +1,15 @@
+description: |
+  You have received a summary of how all participants reacted to the proposals. The topic is:
+
+  {topic_framing}
+
+  Make your final case. Maximum 200 words total.
+
+  1. **Must include** — name the 1-2 articles you consider non-negotiable and state why in
+     1-2 sentences each.
+  2. **Concessions** — if you accept a modification to any article, state it in one sentence.
+  3. **Must exclude** — name any article you consider a red line, in one sentence.
+
+  Nothing else. No summaries, no preamble.
+expected_output: "A concise final argument (max 200 words) covering must-include articles, concessions, and red lines."
+output_file: "phase3_argue.md"

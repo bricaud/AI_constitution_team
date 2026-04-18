@@ -1,0 +1,11 @@
+description: |
+  You have received independent constitutional proposals from all participating agents on the topic:
+
+  {topic_framing}
+
+  Compile a full attributed report. For each agent, list their proposed articles exactly as
+  submitted, clearly labeled with the agent's name.
+
+  Do NOT paraphrase, merge, or editorialize. This is the official verbatim record of who proposed what.
+expected_output: "A full attributed Markdown report listing each agent's proposed articles, labeled by agent name."
+output_file: "phase1_aggregate.md"

@@ -1,0 +1,16 @@
+description: |
+  Compile the final voting report from all individual votes (provided in context).
+
+  For each revised article and each numbered sub-point:
+  1. State the article title and the proposed revision text.
+  2. List each participant's vote (FOR/AGAINST) and their justification.
+  3. Provide a tally: total FOR vs. AGAINST, and whether the revision passes (majority FOR).
+
+  End with an overall summary table:
+
+  | Article | FOR | AGAINST | Result |
+  | :--- | :--- | :--- | :--- |
+
+  Be exhaustive — every participant's vote must appear for every point.
+expected_output: "A complete voting report in Markdown with per-article tallies and an overall results table."
+output_file: "voting_report.md"

@@ -1,0 +1,10 @@
+description: |
+  Based on the opening statements from all participants (provided in context), write a structured summary.
+  For each participant, clearly record:
+  - Which articles they flagged for improvement.
+  - Their main criticisms or concerns.
+  - Their proposed direction for revision.
+  Format as a structured Markdown document, one section per participant.
+  This serves as the official record of opening positions.
+expected_output: "A structured Markdown document summarising each participant's opening position, grouped by participant."
+output_file: "opening_summary.md"

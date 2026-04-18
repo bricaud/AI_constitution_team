@@ -1,0 +1,19 @@
+description: |
+  Based on the Phase 2 reactions summary and all Phase 3 arguments (provided in context), draft
+  the final constitutional text for the topic:
+
+  {topic_framing}
+
+  Identify the most consensual articles — those with broad support and few strong objections —
+  and draft them as formal constitutional text.
+
+  REQUIREMENTS:
+  1. Draft 2-4 Articles, each with 3-5 numbered sub-points.
+  2. Use systematic numbering: Article X.1, X.2, X.3, etc.
+  3. Where there was conflict, choose the formulation that reflects the majority position, or
+     craft a neutral compromise that acknowledges both sides without endorsing either.
+  4. Exclude articles that faced strong, widespread opposition.
+
+  Output ONLY the formal constitutional text. No commentary, no preamble, no explanation.
+expected_output: "2-4 formal constitutional Articles with numbered sub-points in Markdown."
+output_file: "phase4_synthesis.md"

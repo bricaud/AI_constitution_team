@@ -1,0 +1,19 @@
+description: |
+  Based on the full debate (all rounds, provided in context), write a comprehensive summary of the legal review.
+
+  You MUST include a Markdown comparison table with EXACTLY this structure:
+
+  | Proposed Amendment | Proposed By | Agreed By | Disagreed By |
+  | :--- | :--- | :--- | :--- |
+  | [Concise description of the proposed change] | [Agent Name] | [Agent Names] | [Agent Names] |
+
+  Follow these CRITICAL rules:
+  1. Each row MUST be a separate line in the Markdown file.
+  2. Each row MUST represent ONLY ONE specific proposed amendment.
+  3. The 'Proposed Amendment' column MUST NOT exceed 25 words.
+  4. In the 'Agreed By' and 'Disagreed By' columns, list agent names. If nobody disagreed, write 'None'.
+  5. DO NOT dump raw transcripts into the table.
+
+  After the table, provide a short synthesis (2-3 paragraphs) on overarching themes and the most widely supported improvements.
+expected_output: "A Markdown document with a multi-row amendments table (each cell <25 words) and a brief narrative synthesis."
+output_file: "full_summary.md"

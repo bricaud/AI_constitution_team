@@ -1,0 +1,12 @@
+description: |
+  Compile the final voting report from all agents' votes (provided in context).
+
+  For each Article and each sub-point:
+  1. Quote the sub-point content
+  2. List each agent's vote (FOR/AGAINST) and their justification
+  3. Show the tally: e.g., "6 FOR, 2 AGAINST"
+  4. Mark the outcome: ADOPTED (majority FOR) or REJECTED (majority AGAINST)
+
+  End with a summary table listing all sub-points with their final tally and outcome.
+expected_output: "A complete Markdown voting report with tallies and ADOPTED/REJECTED outcomes for each sub-point."
+output_file: "phase5_vote_report.md"

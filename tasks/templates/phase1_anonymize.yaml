@@ -1,0 +1,15 @@
+description: |
+  Based on the attributed proposals report provided in context, create an anonymized and
+  deduplicated version.
+
+  Follow this process:
+  1. Remove ALL agent names — attribute nothing to anyone.
+  2. Group articles by theme, using theme names that reflect what was actually proposed.
+  3. Within each theme, list all proposed articles. Where multiple agents proposed identical or
+     near-identical articles, merge them into a single entry and note it was proposed by
+     "multiple participants". Where articles are similar but distinct, list each variant separately.
+
+  The result should give readers a complete map of what was proposed across all participants,
+  without revealing authorship.
+expected_output: "A themed, anonymized Markdown document grouping all proposed articles, with near-duplicates merged."
+output_file: "phase1_anonymize.md"

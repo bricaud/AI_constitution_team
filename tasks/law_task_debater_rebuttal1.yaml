@@ -1,0 +1,6 @@
+description: |
+  You have reviewed the opening statements from all participants (see context).
+  Now give your first rebuttal (max 300 words).
+  Respond to the proposals made by the other participants — agree, disagree, refine, or build upon their arguments.
+  Ground your response in your specific perspective and knowledge base.
+expected_output: "A concise first rebuttal (max 300 words) responding to other participants' opening proposals."

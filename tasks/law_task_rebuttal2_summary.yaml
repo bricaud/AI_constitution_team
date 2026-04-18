@@ -1,0 +1,8 @@
+description: |
+  Based on the final round of closing arguments from all participants (provided in context), write a definitive summary.
+  For each participant, record their final position and concrete amendment proposals.
+  Highlight where the group converged and where irreconcilable differences remain.
+  Format as a structured Markdown document, one section per participant.
+  This is the final official record of positions before synthesis.
+expected_output: "A structured Markdown document summarising each participant's final position and concrete proposals."
+output_file: "rebuttal2_summary.md"
